@@ -7,7 +7,7 @@ client: Self-project.
 role: Solo development
 duration: 1 months
 description: 발표 연습 / 훈련용 인공지능 앱.
-image: /projects/presen/presen.png
+image: /projects/presen/Presen.png
 
 tags:
   - Flutter

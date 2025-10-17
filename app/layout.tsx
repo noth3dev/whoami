@@ -25,6 +25,7 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${firaCode.variable}`}>
       <head>
+        <link rel="icon" type="image/png" sizes="any" href="/charprofile.png" />
         <link
           rel="stylesheet"
           as="style"
