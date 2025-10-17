@@ -18,9 +18,9 @@ export default function Navigation() {
 
   const navItems = [
     { name: "Home", path: "/" },
+    { name: "About", path: "/about" },
     { name: "Projects", path: "/project" },
     { name: "Stack", path: "/stack" },
-    { name: "About", path: "/about" },
   ]
 
   return (

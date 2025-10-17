@@ -18,6 +18,7 @@ interface ProjectFrontmatter {
   link?: string
   tags?: string[]
   featured?: boolean
+  legacy?: boolean
 }
 
 interface ProjectData extends ProjectFrontmatter {
@@ -155,6 +156,12 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ slug: 
               </span>
               <span>•</span>
               <span>{project.year}</span>
+              {project.legacy && (
+                <>
+                  <span>•</span>
+                  <span className="px-3 py-1 border border-border rounded-full uppercase tracking-[0.2em] text-[0.65rem]">Legacy</span>
+                </>
+              )}
             </div>
 
             <h1 className="text-5xl sm:text-6xl font-light tracking-tight">{project.title}</h1>

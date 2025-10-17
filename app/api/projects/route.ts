@@ -12,6 +12,7 @@ interface ProjectMetadata {
   image?: string
   tags?: string[]
   featured?: boolean
+  legacy?: boolean
 }
 
 export async function GET() {

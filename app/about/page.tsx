@@ -83,11 +83,14 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Fun Facts */}
+        {/* Beyond Code */}
         <section>
-          <h2 className="text-3xl font-light mb-8">Beyond Code</h2>
+          <h2 className="text-3xl font-light mb-12 relative">
+            Beyond Code
+            <span className="absolute -bottom-3 left-0 w-20 h-1 bg-foreground rounded-full"></span>
+          </h2>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               {
                 icon: "☕",
@@ -101,24 +104,25 @@ export default function AboutPage() {
               },
               {
                 icon: "🎨",
-                title: "Design Lover",
-                description: "Fascinated by the intersection of design and code",
-              },
-              {
-                icon: "🌏",
-                title: "Travel Bug",
-                description: "Love exploring new places and cultures",
+                title: "디자인 강박증",
+                description: "완벽한 디자인에 대한 강박이 있습니다",
               },
               {
                 icon: "💡",
-                title: "Problem Solver",
-                description: "Enjoy tackling complex challenges with elegant solutions",
+                title: "사색가",
+                description: "문제를 이리저리 둘러보며 물고 놓지 않습니다",
               },
             ].map((fact, index) => (
-              <div key={index} className="p-6 border border-border rounded-lg space-y-3">
-                <div className="text-4xl">{fact.icon}</div>
-                <h3 className="font-medium">{fact.title}</h3>
-                <p className="text-sm text-muted-foreground">{fact.description}</p>
+              <div
+                key={index}
+                className="group relative p-6 border border-border rounded-xl hover:border-foreground/20 transition-all duration-500 hover:shadow-lg hover:shadow-foreground/10 overflow-hidden hover:-translate-y-1 cursor-pointer"
+              >
+                <div className="absolute inset-0 bg-foreground/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative z-10 space-y-3">
+                  <div className="text-4xl group-hover:scale-110 transition-transform duration-300">{fact.icon}</div>
+                  <h3 className="font-medium text-foreground group-hover:text-foreground transition-colors duration-300">{fact.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{fact.description}</p>
+                </div>
               </div>
             ))}
           </div>

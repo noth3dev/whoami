@@ -110,7 +110,7 @@ export default function Home() {
 
               <div className="space-y-6 max-w-md">
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed relative">
-                  <span className="relative z-10">완성형이 아니다. 성장형이다.</span>
+                  <span className="relative z-10">완성형보다는 성장형으로 불리고 싶습니다.</span>
                   <span className="absolute -left-2 top-0 text-6xl text-foreground/5 font-bold select-none">"</span>
                 </p>
 

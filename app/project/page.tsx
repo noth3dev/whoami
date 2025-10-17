@@ -15,6 +15,7 @@ interface Project {
   image?: string
   tags?: string[]
   featured?: boolean
+  legacy?: boolean
 }
 
 export default function ProjectsPage() {
@@ -112,7 +113,7 @@ export default function ProjectsPage() {
           <div className="space-y-6">
             {filteredProjects.map((project) => (
               <div
-                key={project.id}
+                key={project.slug}
                 className="group grid md:grid-cols-12 gap-6 p-6 border border-border rounded-xl hover:border-foreground/20 transition-all duration-500 hover:shadow-xl hover:shadow-foreground/5 overflow-hidden hover:-translate-y-1"
               >
                 <div className="absolute inset-0 bg-foreground/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl pointer-events-none"></div>
@@ -133,7 +134,12 @@ export default function ProjectsPage() {
 
                 <div className={`${project.image ? 'md:col-span-9' : 'md:col-span-12'} space-y-3 relative z-10`}>
                   <div className="flex items-center justify-between pointer-events-none">
-                    <div className="text-xs text-muted-foreground font-mono">{project.category}</div>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
+                      <span>{project.category}</span>
+                      {project.legacy && (
+                        <span className="px-2 py-0.5 rounded-full border border-border uppercase tracking-[0.2em] text-[0.6rem]">Legacy</span>
+                      )}
+                    </div>
                     <div className="text-xs text-muted-foreground">{project.year}</div>
                   </div>
 
@@ -160,7 +166,7 @@ export default function ProjectsPage() {
                     href={`/project/${project.slug}`}
                     className="inline-flex items-center gap-2 text-sm text-muted-foreground group-hover:text-foreground transition-colors duration-300 font-mono pt-2 relative z-20"
                   >
-                    <span>View details</span>
+                    <span>{project.legacy ? "View legacy details" : "View details"}</span>
                     <svg
                       className="w-4 h-4 transform group-hover:translate-x-2 transition-transform duration-300"
                       fill="none"
