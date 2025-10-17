@@ -21,8 +21,6 @@ export default function Navigation() {
     { name: "Projects", path: "/project" },
     { name: "Stack", path: "/stack" },
     { name: "About", path: "/about" },
-    { name: "Blog", path: "/blog" },
-    { name: "Contact", path: "/contact" },
   ]
 
   return (
