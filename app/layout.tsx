@@ -12,6 +12,9 @@ const firaCode = Fira_Code({
 export const metadata: Metadata = {
   title: "김세준 - Notth3dev",
   description: "AI/ML, AI research, App, Design - 한국디지털미디어고등학교",
+  icons: {
+    icon: "/charprofile.png",
+  },
 }
 
 export default function RootLayout({
