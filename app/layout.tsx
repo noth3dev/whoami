@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Fira_Code } from "next/font/google"
+import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
 const firaCode = Fira_Code({
@@ -23,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ko" className={`${firaCode.variable}`}>
+    <html lang="ko" className={`${firaCode.variable}`} suppressHydrationWarning>
       <head>
         <link rel="icon" type="image/png" sizes="any" href="/charprofile.png" />
         <link
@@ -33,7 +34,11 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
         />
       </head>
-      <body className="font-pretendard antialiased">{children}</body>
+      <body className="font-pretendard antialiased">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   )
 }
