@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useTheme } from "next-themes"
 import { Check } from "lucide-react"
 
 interface TagFilterProps {
@@ -17,7 +18,21 @@ const transitionProps = {
 }
 
 export default function TagFilter({ items, onSelectionChange }: TagFilterProps) {
+  const { resolvedTheme } = useTheme()
   const [selected, setSelected] = useState<string[]>([])
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const isDarkTheme = mounted ? resolvedTheme === "dark" : true
+  const selectedBg = isDarkTheme ? "rgba(6, 78, 59, 1)" : "rgba(16, 185, 129, 1)"
+  const selectedHoverBg = isDarkTheme ? "rgba(6, 78, 59, 1)" : "rgba(5, 150, 105, 1)"
+  const selectedTapBg = isDarkTheme ? "rgba(6, 95, 70, 1)" : "rgba(4, 120, 87, 1)"
+  const unselectedBg = isDarkTheme ? "rgba(39, 39, 42, 0.5)" : "rgba(244, 244, 245, 1)"
+  const unselectedHoverBg = isDarkTheme ? "rgba(39, 39, 42, 0.8)" : "rgba(228, 228, 231, 1)"
+  const unselectedTapBg = isDarkTheme ? "rgba(39, 39, 42, 0.9)" : "rgba(212, 212, 216, 1)"
 
   const toggleTag = (tag: string) => {
     const newSelected = selected.includes(tag) ? selected.filter((t) => t !== tag) : [...selected, tag]
@@ -40,13 +55,13 @@ export default function TagFilter({ items, onSelectionChange }: TagFilterProps) 
             layout
             initial={false}
             animate={{
-              backgroundColor: isSelected ? "rgba(6, 78, 59, 1)" : "rgba(39, 39, 42, 0.5)",
+              backgroundColor: isSelected ? selectedBg : unselectedBg,
             }}
             whileHover={{
-              backgroundColor: isSelected ? "rgba(6, 78, 59, 1)" : "rgba(39, 39, 42, 0.8)",
+              backgroundColor: isSelected ? selectedHoverBg : unselectedHoverBg,
             }}
             whileTap={{
-              backgroundColor: isSelected ? "rgba(6, 95, 70, 1)" : "rgba(39, 39, 42, 0.9)",
+              backgroundColor: isSelected ? selectedTapBg : unselectedTapBg,
             }}
             transition={{
               type: "spring",
@@ -61,8 +76,12 @@ export default function TagFilter({ items, onSelectionChange }: TagFilterProps) 
               transition-all duration-300
               ${
                 isSelected
-                  ? "text-emerald-400 ring-[hsla(0,0%,100%,0.12)]"
-                  : "text-zinc-400 ring-[hsla(0,0%,100%,0.06)]"
+                  ? isDarkTheme
+                    ? "text-emerald-400 ring-white/10"
+                    : "text-emerald-700 ring-emerald-200"
+                  : isDarkTheme
+                    ? "text-zinc-300 ring-white/10"
+                    : "text-zinc-700 ring-zinc-300"
               }
             `}
           >
