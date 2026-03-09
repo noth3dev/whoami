@@ -37,3 +37,13 @@ export interface TechItem {
     is_learning: boolean
     display_order: number
 }
+
+export interface Award {
+    id: string
+    title: string
+    organization: string
+    date: string
+    description?: string
+    link?: string
+    display_order: number
+}

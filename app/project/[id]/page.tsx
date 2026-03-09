@@ -59,13 +59,29 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
         <div className="min-h-screen bg-background text-foreground">
             <Navigation />
             <main className="pt-32 pb-20 max-w-4xl mx-auto px-6">
-                <h1 className="text-5xl font-light mb-4">{project.title}</h1>
-                <div className="flex gap-4 text-muted-foreground font-mono text-sm mb-8">
-                    <span>{project.category}</span>
-                    <span>{project.year}</span>
+                <div className="mb-12 space-y-4">
+                    <div className="flex gap-4 text-muted-foreground font-mono text-sm">
+                        <span className="px-2 py-0.5 border border-border rounded">{project.category}</span>
+                        <span>{project.year}</span>
+                    </div>
+                    <h1 className="text-5xl font-light tracking-tight">{project.title}</h1>
+                    <p className="text-xl text-muted-foreground leading-relaxed">{project.description}</p>
                 </div>
-                <article className="prose prose-invert max-w-none">
-                    <ReactMarkdown>{project.content}</ReactMarkdown>
+
+                {project.image && (
+                    <div className="aspect-[21/9] w-full rounded-2xl overflow-hidden mb-16 border border-border shadow-2xl">
+                        <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                    </div>
+                )}
+
+                <article className="prose prose-invert prose-lg max-w-none prose-headings:font-light prose-h1:text-4xl prose-p:text-foreground/80 prose-img:rounded-2xl prose-img:border prose-img:border-border">
+                    <ReactMarkdown
+                        components={{
+                            img: ({ node, ...props }) => <img {...props} className="w-full h-auto rounded-2xl border border-border shadow-lg my-12" />
+                        }}
+                    >
+                        {project.content}
+                    </ReactMarkdown>
                 </article>
             </main>
         </div>

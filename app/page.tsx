@@ -6,6 +6,7 @@ import Hero from "@/components/sections/hero"
 import ExperienceSection from "@/components/sections/experience-section"
 import ProjectsSection from "@/components/sections/projects-section"
 import ThoughtsSection from "@/components/sections/thoughts-section"
+import AwardsSection from "@/components/sections/awards-section"
 import ConnectSection from "@/components/sections/connect-section"
 
 export default function Home() {
@@ -44,7 +45,7 @@ export default function Home() {
       <Navigation />
       <nav className="fixed left-8 top-1/2 -translate-y-1/2 z-40 hidden lg:block">
         <div className="flex flex-col gap-4">
-          {["intro", "work", "projects", "thoughts", "connect"].map((section) => (
+          {["intro", "work", "projects", "thoughts", "awards", "connect"].map((section) => (
             <button
               key={section}
               onClick={() => document.getElementById(section)?.scrollIntoView({ behavior: "smooth" })}
@@ -63,7 +64,8 @@ export default function Home() {
         <ExperienceSection sectionRef={(el) => (sectionsRef.current[1] = el)} />
         <ProjectsSection sectionRef={(el) => (sectionsRef.current[2] = el)} />
         <ThoughtsSection sectionRef={(el) => (sectionsRef.current[3] = el)} />
-        <ConnectSection sectionRef={(el) => (sectionsRef.current[4] = el)} />
+        <AwardsSection sectionRef={(el) => (sectionsRef.current[4] = el)} />
+        <ConnectSection sectionRef={(el) => (sectionsRef.current[5] = el)} />
 
         <footer className="py-12 sm:py-16 border-t border-border">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 sm:gap-8">

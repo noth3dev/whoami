@@ -1,5 +1,20 @@
 import { supabase } from './supabase';
-import { Project, Job, BlogPost, TechItem } from '@/types';
+import { Project, Job, BlogPost, TechItem, Award } from '@/types';
+
+export async function getAwards() {
+    const { data, error } = await supabase
+        .from('awards')
+        .select('*')
+        .order('display_order', { ascending: true })
+        .order('date', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching awards:', error);
+        return [];
+    }
+
+    return data as Award[];
+}
 
 export async function getProjects(limit?: number) {
     let query = supabase

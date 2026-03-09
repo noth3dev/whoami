@@ -55,20 +55,36 @@ export default function BlogPostDetailPage({ params }: { params: Promise<{ id: s
         <div className="min-h-screen bg-background text-foreground">
             <Navigation />
             <main className="pt-32 pb-20 max-w-4xl mx-auto px-6">
-                <article className="space-y-8">
-                    <div className="space-y-4">
-                        <div className="text-sm font-mono text-muted-foreground">{post.date}</div>
-                        <h1 className="text-5xl font-light tracking-tight">{post.title}</h1>
+                <article className="space-y-12">
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-3 text-sm font-mono text-muted-foreground">
+                            <span className="px-2 py-0.5 border border-border rounded">Thought</span>
+                            <span>{post.date}</span>
+                        </div>
+                        <h1 className="text-6xl font-light tracking-tight leading-tight">{post.title}</h1>
                         <div className="flex flex-wrap gap-2">
                             {post.tags?.map(tag => (
-                                <span key={tag} className="px-2 py-1 text-xs border border-border rounded-full text-muted-foreground">
-                                    {tag}
+                                <span key={tag} className="px-3 py-1 text-xs bg-foreground/[0.03] border border-border rounded-full text-muted-foreground">
+                                    #{tag}
                                 </span>
                             ))}
                         </div>
                     </div>
-                    <div className="prose prose-invert max-w-none pt-8 border-t border-border">
-                        <ReactMarkdown>{post.content}</ReactMarkdown>
+
+                    {post.image && (
+                        <div className="aspect-[16/9] w-full rounded-3xl overflow-hidden border border-border shadow-2xl">
+                            <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
+                        </div>
+                    )}
+
+                    <div className="prose prose-invert prose-lg max-w-none pt-12 border-t border-border prose-headings:font-light prose-p:text-foreground/80">
+                        <ReactMarkdown
+                            components={{
+                                img: ({ node, ...props }) => <img {...props} className="w-full h-auto rounded-2xl border border-border shadow-lg my-12" />
+                            }}
+                        >
+                            {post.content}
+                        </ReactMarkdown>
                     </div>
                 </article>
             </main>

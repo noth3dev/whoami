@@ -4,9 +4,9 @@ import "@blocknote/core/fonts/inter.css"
 import { useCreateBlockNote } from "@blocknote/react"
 import { BlockNoteView } from "@blocknote/mantine"
 import "@blocknote/mantine/style.css"
+import { useTheme } from "next-themes"
 import { useEffect } from "react"
-
-import { supabase, uploadMedia } from "@/lib/supabase"
+import { uploadMedia } from "@/lib/supabase"
 
 interface EditorProps {
     initialContent?: string
@@ -14,6 +14,8 @@ interface EditorProps {
 }
 
 export default function Editor({ initialContent, onChange }: EditorProps) {
+    const { theme } = useTheme()
+
     const editor = useCreateBlockNote({
         uploadFile: async (file: File) => {
             const url = await uploadMedia(file);
@@ -35,17 +37,17 @@ export default function Editor({ initialContent, onChange }: EditorProps) {
 
     return (
         <div className="relative group">
-            <div className="border border-border rounded-xl overflow-hidden bg-background min-h-[400px] shadow-sm group-hover:shadow-md transition-shadow duration-300">
+            <div className="border border-border/50 rounded-2xl overflow-hidden bg-background min-h-[500px] shadow-sm group-hover:shadow-xl group-hover:border-foreground/10 transition-all duration-500">
                 <BlockNoteView
                     editor={editor}
-                    theme="dark"
+                    theme={theme === "light" ? "light" : "dark"}
                     sideMenu={true}
                     slashMenu={true}
                     onChange={async () => {
                         const markdown = await editor.blocksToMarkdownLossy(editor.topLevelBlocks)
                         onChange(markdown)
                     }}
-                    className="py-8"
+                    className="py-12"
                 />
             </div>
             <div className="mt-2 flex justify-between items-center text-[10px] font-mono text-muted-foreground px-2">

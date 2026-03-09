@@ -138,6 +138,12 @@ export default function AdminPage() {
                             onNew={() => router.push("/admin/stack/new")}
                             onManage={() => router.push("/admin/stack/list")}
                         />
+                        <AdminCard
+                            title="Awards"
+                            description="Keep track of your medals"
+                            onNew={() => router.push("/admin/award/new")}
+                            onManage={() => router.push("/admin/award/list")}
+                        />
                     </div>
                 </div>
             </main>
