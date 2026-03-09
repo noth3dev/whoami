@@ -39,6 +39,7 @@ export default function Navigation() {
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
     { name: "Projects", path: "/project" },
+    { name: "Blog", path: "/blog" },
     { name: "Stack", path: "/stack" },
   ]
 
@@ -56,11 +57,10 @@ export default function Navigation() {
               <Link
                 key={item.path}
                 href={item.path}
-                className={`text-sm transition-colors duration-300 ${
-                  pathname === item.path
+                className={`text-sm transition-colors duration-300 ${pathname === item.path
                     ? "text-foreground font-medium"
                     : "text-muted-foreground hover:text-foreground"
-                }`}
+                  }`}
               >
                 {item.name}
               </Link>
