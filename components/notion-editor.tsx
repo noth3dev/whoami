@@ -158,9 +158,15 @@ export default function NotionEditor({
 
     const handleCoverUpload = async (file: File) => {
         setUploadingCover(true)
-        const url = await uploadMedia(file)
-        if (url) handleMetaChange({ image: url } as any)
-        setUploadingCover(false)
+        try {
+            const url = await uploadMedia(file)
+            if (url) handleMetaChange({ image: url } as any)
+            else alert("Upload failed. please check console.")
+        } catch (e: any) {
+            alert("Upload error: " + e.message)
+        } finally {
+            setUploadingCover(false)
+        }
     }
 
     return (
@@ -457,11 +463,13 @@ function PropertyItem({ icon, label, children }: { icon: any, label: string, chi
     )
 }
 
-function CatSelect({ current, onChange }: { current: string, onChange: (v: string) => void }) {
+function CatSelect({ current = "", onChange }: { current?: string, onChange: (v: string) => void }) {
     const cats = ["General", "DevLog", "AI", "Life", "Idea"]
+    const allUniqueCats = Array.from(new Set([...cats, current])).filter(Boolean)
+
     return (
         <div className="flex flex-wrap gap-1">
-            {cats.map(c => (
+            {allUniqueCats.map(c => (
                 <button
                     key={c}
                     onClick={() => onChange(c)}
@@ -476,8 +484,11 @@ function CatSelect({ current, onChange }: { current: string, onChange: (v: strin
                 placeholder="+ Add"
                 onKeyDown={e => {
                     if (e.key === "Enter") {
-                        onChange((e.target as any).value)
-                            ; (e.target as any).value = ""
+                        const val = (e.target as any).value.trim();
+                        if (val) {
+                            onChange(val);
+                            (e.target as any).value = "";
+                        }
                     }
                 }}
             />
