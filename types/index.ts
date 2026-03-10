@@ -28,6 +28,7 @@ export interface BlogPost {
     tags: string[]
     published: boolean
     image?: string
+    category?: string
 }
 export interface TechItem {
     id: string
