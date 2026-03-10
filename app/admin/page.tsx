@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react"
 import Navigation from "@/components/navigation"
 import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabase"
+import { supabase, getSession } from "@/lib/supabase"
 import { User } from "@supabase/supabase-js"
+import { Loader2 } from "lucide-react"
 
 export default function AdminPage() {
     const [email, setEmail] = useState("")
@@ -123,13 +124,32 @@ export default function AdminPage() {
                         <AdminCard
                             title="Projects"
                             description="Create and manage your projects"
-                            onNew={() => router.push("/admin/project/new")}
+                            onNew={async () => {
+                                const session = await getSession();
+                                if (!session) return;
+                                const res = await fetch("/api/projects/create", {
+                                    method: "POST",
+                                    headers: { "Authorization": `Bearer ${session.access_token}` },
+                                    body: JSON.stringify({ data: { title: "Untitled Project", published: false } })
+                                });
+                                const { id } = await res.json();
+                                if (id) router.push(`/admin/project/new/${id}`);
+                            }}
                             onManage={() => router.push("/admin/project/list")}
                         />
                         <AdminCard
                             title="Blog Posts"
                             description="Write and edit your thoughts"
-                            onNew={() => router.push("/admin/blog/new")}
+                            onNew={async () => {
+                                const session = await getSession();
+                                if (!session) return;
+                                const res = await fetch("/api/blog/create", {
+                                    method: "POST",
+                                    headers: { "Authorization": `Bearer ${session.access_token}` }
+                                });
+                                const { id } = await res.json();
+                                if (id) router.push(`/admin/blog/new/${id}`);
+                            }}
                             onManage={() => router.push("/admin/blog/list")}
                         />
                         <AdminCard
@@ -151,17 +171,34 @@ export default function AdminPage() {
     )
 }
 
-function AdminCard({ title, description, onNew, onManage }: { title: string, description: string, onNew: () => void, onManage: () => void }) {
+function AdminCard({ title, description, onNew, onManage }: { title: string, description: string, onNew: () => Promise<void> | void, onManage: () => void }) {
+    const [isCreating, setIsCreating] = useState(false)
+
+    const handleNew = async () => {
+        setIsCreating(true)
+        try {
+            await onNew()
+        } finally {
+            setIsCreating(false)
+        }
+    }
+
     return (
         <div className="p-8 border border-border rounded-2xl bg-foreground/[0.01] hover:border-foreground/20 hover:bg-foreground/[0.02] transition-all duration-300">
             <h3 className="text-2xl font-medium mb-2">{title}</h3>
             <p className="text-muted-foreground mb-6 text-sm">{description}</p>
             <div className="flex gap-4">
                 <button
-                    onClick={onNew}
-                    className="flex-1 py-2 bg-foreground text-background rounded-lg hover:bg-foreground/90 transition-colors text-sm font-medium"
+                    onClick={handleNew}
+                    disabled={isCreating}
+                    className="flex-1 py-2 bg-foreground text-background rounded-lg hover:bg-foreground/90 transition-colors text-sm font-medium flex items-center justify-center gap-2"
                 >
-                    New
+                    {isCreating ? (
+                        <>
+                            <Loader2 size={14} className="animate-spin" />
+                            Creating...
+                        </>
+                    ) : "New"}
                 </button>
                 <button
                     onClick={onManage}

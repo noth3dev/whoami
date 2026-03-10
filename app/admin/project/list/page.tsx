@@ -5,7 +5,8 @@ import Navigation from "@/components/navigation"
 import { useRouter } from "next/navigation"
 import { getProjects } from "@/lib/data-service"
 import { Project } from "@/types"
-import { supabase } from "@/lib/supabase"
+import { supabase, getSession } from "@/lib/supabase"
+import { Loader2 } from "lucide-react"
 
 export default function AdminProjectListPage() {
     const router = useRouter()
@@ -14,7 +15,7 @@ export default function AdminProjectListPage() {
 
     useEffect(() => {
         async function load() {
-            const { data: { session } } = await supabase.auth.getSession()
+            const session = await getSession()
             if (!session) {
                 router.push("/admin")
                 return
@@ -26,6 +27,26 @@ export default function AdminProjectListPage() {
         load()
     }, [router])
 
+    const handleCreateNew = async () => {
+        const session = await getSession()
+        if (!session) return
+
+        try {
+            const res = await fetch("/api/projects/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({ data: { title: "Untitled Project", published: false } })
+            })
+            const { id } = await res.json()
+            if (id) router.push(`/admin/project/new/${id}`)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     return (
         <div className="min-h-screen bg-background text-foreground">
             <Navigation />
@@ -33,8 +54,8 @@ export default function AdminProjectListPage() {
                 <div className="flex justify-between items-center mb-12">
                     <h1 className="text-4xl font-light">Manage Projects</h1>
                     <button
-                        onClick={() => router.push("/admin/project/new")}
-                        className="px-6 py-2 bg-foreground text-background rounded-lg hover:bg-foreground/90 transition-colors"
+                        onClick={handleCreateNew}
+                        className="px-6 py-2 bg-foreground text-background rounded-lg hover:bg-foreground/90 transition-colors flex items-center gap-2"
                     >
                         + New Project
                     </button>
@@ -52,7 +73,7 @@ export default function AdminProjectListPage() {
                                 </div>
                                 <div className="flex gap-3">
                                     <button
-                                        onClick={() => router.push(`/admin/project/${project.id}/edit`)}
+                                        onClick={() => router.push(`/admin/project/new/${project.id}`)}
                                         className="px-4 py-2 border border-border rounded-lg hover:border-foreground/20 transition-colors"
                                     >
                                         Edit

@@ -17,13 +17,21 @@ export async function POST(request: Request) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
-        const { error } = await supabaseAdmin.from('projects').insert([data]);
+        const { data: insertedData, error } = await supabaseAdmin
+            .from('projects')
+            .insert([data || {
+                title: 'Untitled Project',
+                featured: false,
+                year: new Date().getFullYear().toString()
+            }])
+            .select()
+            .single();
 
         if (error) {
             return NextResponse.json({ message: error.message }, { status: 500 });
         }
 
-        return NextResponse.json({ message: 'Project created successfully' });
+        return NextResponse.json({ message: 'Project created successfully', id: insertedData.id });
     } catch (error: any) {
         return NextResponse.json({ message: error.message }, { status: 500 });
     }

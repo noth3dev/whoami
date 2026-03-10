@@ -18,13 +18,19 @@ export async function POST(request: Request) {
         }
 
         // Insert blog post
-        const { error } = await supabaseAdmin
+        const { data: insertedData, error } = await supabaseAdmin
             .from('blog_posts')
-            .insert([data]);
+            .insert([data || {
+                title: '',
+                published: false,
+                date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            }])
+            .select()
+            .single();
 
         if (error) throw error;
 
-        return NextResponse.json({ success: true });
+        return NextResponse.json({ success: true, id: insertedData.id });
     } catch (error: any) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
