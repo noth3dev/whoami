@@ -19,7 +19,7 @@ export async function POST(request: Request) {
 
         // Filter data to only include valid columns
         // NOTE: 'image' and 'slug' are temporarily removed until added to the DB
-        const allowedColumns = ['title', 'date', 'excerpt', 'content', 'tags', 'published', 'category'];
+        const allowedColumns = ['title', 'date', 'excerpt', 'content', 'tags', 'published', 'category', 'grid_size', 'image', 'slug'];
         const filteredData = Object.keys(data)
             .filter(key => allowedColumns.includes(key))
             .reduce((obj: any, key) => {

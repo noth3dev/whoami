@@ -23,6 +23,7 @@ export default function BlogPostDetailPage({ params }: { params: Promise<{ id: s
                 const data = await getBlogPostById(id)
                 if (data) {
                     setPost(data)
+                    document.title = `${data.title} - Notth3dev`
                 }
             } catch (error) {
                 console.error("Error loading blog post:", error)

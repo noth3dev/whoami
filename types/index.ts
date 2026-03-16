@@ -29,6 +29,7 @@ export interface BlogPost {
     published: boolean
     image?: string
     category?: string
+    grid_size?: string
 }
 export interface TechItem {
     id: string

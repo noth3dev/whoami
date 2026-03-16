@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { getBlogPosts } from "@/lib/data-service"
 import { BlogPost } from "@/types"
 import { supabase, getSession } from "@/lib/supabase"
-import { Loader2, Eye, EyeOff } from "lucide-react"
+import { Loader2, Eye, EyeOff, LayoutGrid } from "lucide-react"
 
 export default function AdminBlogListPage() {
     const router = useRouter()
@@ -26,6 +26,31 @@ export default function AdminBlogListPage() {
         }
         load()
     }, [router])
+
+    const handleUpdateGridSize = async (post: BlogPost, size: string) => {
+        const session = await getSession()
+        if (!session) return
+
+        try {
+            const res = await fetch("/api/blog/update", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({
+                    id: post.id,
+                    data: { grid_size: size }
+                })
+            })
+
+            if (res.ok) {
+                setPosts(posts.map(p => p.id === post.id ? { ...p, grid_size: size } : p))
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     const handleTogglePublish = async (post: BlogPost) => {
         const session = await getSession()
@@ -87,29 +112,52 @@ export default function AdminBlogListPage() {
                         <p className="text-muted-foreground">Loading...</p>
                     ) : posts.length > 0 ? (
                         posts.map(post => (
-                            <div key={post.id} className="p-6 border border-border rounded-xl flex justify-between items-center hover:bg-foreground/[0.02] transition-colors">
-                                <div>
+                            <div key={post.id} className="p-6 border border-border rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 hover:bg-foreground/[0.02] transition-colors">
+                                <div className="flex-1">
                                     <h3 className="text-xl font-medium">{post.title}</h3>
-                                    <p className="text-sm text-muted-foreground">{post.date}</p>
+                                    <div className="flex items-center gap-3 mt-1">
+                                        <p className="text-sm text-muted-foreground font-mono">{post.date}</p>
+                                        <span className="w-1 h-1 rounded-full bg-border" />
+                                        <span className="text-[10px] uppercase font-bold text-muted-foreground/50 tracking-widest">{post.category || 'No Category'}</span>
+                                    </div>
                                 </div>
-                                <div className="flex gap-3">
-                                    <button
-                                        onClick={() => handleTogglePublish(post)}
-                                        className={`px-4 py-2 border rounded-lg transition-all flex items-center gap-2 ${
-                                            post.published 
-                                            ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20" 
-                                            : "border-blue-500/20 bg-blue-500/10 text-blue-500 hover:bg-blue-500/20"
-                                        }`}
-                                    >
-                                        {post.published ? <Eye size={16} /> : <EyeOff size={16} />}
-                                        {post.published ? "Published" : "Draft"}
-                                    </button>
-                                    <button
-                                        onClick={() => router.push(`/admin/blog/${post.id}/edit`)}
-                                        className="px-4 py-2 border border-border rounded-lg hover:border-foreground/20 transition-colors"
-                                    >
-                                        Edit
-                                    </button>
+                                <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                                    {/* Grid Size Selector */}
+                                    <div className="flex items-center gap-1 bg-foreground/[0.03] p-1 rounded-lg border border-border/50">
+                                        {['1x1', '2x1', '1x2', '2x2', '3x2'].map(size => (
+                                            <button
+                                                key={size}
+                                                onClick={() => handleUpdateGridSize(post, size)}
+                                                className={`px-3 py-1 text-[10px] font-bold rounded-md transition-all ${
+                                                    (post.grid_size || '1x1') === size
+                                                    ? "bg-foreground text-background shadow-md"
+                                                    : "text-muted-foreground hover:bg-foreground/5"
+                                                }`}
+                                            >
+                                                {size}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    <div className="flex items-center gap-3 border-l border-border/50 pl-3">
+                                        <button
+                                            onClick={() => handleTogglePublish(post)}
+                                            className={`px-4 py-2 border rounded-lg transition-all flex items-center gap-2 whitespace-nowrap ${
+                                                post.published 
+                                                ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20" 
+                                                : "border-blue-500/20 bg-blue-500/10 text-blue-500 hover:bg-blue-500/20"
+                                            }`}
+                                        >
+                                            {post.published ? <Eye size={16} /> : <EyeOff size={16} />}
+                                            {post.published ? "Published" : "Draft"}
+                                        </button>
+                                        <button
+                                            onClick={() => router.push(`/admin/blog/${post.id}/edit`)}
+                                            className="px-4 py-2 border border-border rounded-lg hover:border-foreground/20 transition-colors"
+                                        >
+                                            Edit
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         ))
