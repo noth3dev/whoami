@@ -38,10 +38,10 @@ export default function AdminProjectListPage() {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session.access_token}`
                 },
-                body: JSON.stringify({ data: { title: "Untitled Project", published: false } })
+                body: JSON.stringify({ data: { title: "Untitled Project" } })
             })
             const { id } = await res.json()
-            if (id) router.push(`/admin/project/new/${id}`)
+            if (id) router.push(`/admin/project/${id}/edit`)
         } catch (error) {
             console.error(error)
         }
@@ -73,7 +73,7 @@ export default function AdminProjectListPage() {
                                 </div>
                                 <div className="flex gap-3">
                                     <button
-                                        onClick={() => router.push(`/admin/project/new/${project.id}`)}
+                                        onClick={() => router.push(`/admin/project/${project.id}/edit`)}
                                         className="px-4 py-2 border border-border rounded-lg hover:border-foreground/20 transition-colors"
                                     >
                                         Edit

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { getBlogPosts } from "@/lib/data-service"
 import { BlogPost } from "@/types"
 import { supabase, getSession } from "@/lib/supabase"
-import { Loader2 } from "lucide-react"
+import { Loader2, Eye, EyeOff } from "lucide-react"
 
 export default function AdminBlogListPage() {
     const router = useRouter()
@@ -20,12 +20,37 @@ export default function AdminBlogListPage() {
                 router.push("/admin")
                 return
             }
-            const data = await getBlogPosts()
+            const data = await getBlogPosts(undefined, false)
             setPosts(data)
             setLoading(false)
         }
         load()
     }, [router])
+
+    const handleTogglePublish = async (post: BlogPost) => {
+        const session = await getSession()
+        if (!session) return
+
+        try {
+            const res = await fetch("/api/blog/update", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({
+                    id: post.id,
+                    data: { published: !post.published }
+                })
+            })
+
+            if (res.ok) {
+                setPosts(posts.map(p => p.id === post.id ? { ...p, published: !p.published } : p))
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     const handleCreateNew = async () => {
         const session = await getSession()
@@ -37,7 +62,7 @@ export default function AdminBlogListPage() {
                 headers: { "Authorization": `Bearer ${session.access_token}` }
             })
             const { id } = await res.json()
-            if (id) router.push(`/admin/blog/new/${id}`)
+            if (id) router.push(`/admin/blog/${id}/edit`)
         } catch (error) {
             console.error(error)
         }
@@ -69,7 +94,18 @@ export default function AdminBlogListPage() {
                                 </div>
                                 <div className="flex gap-3">
                                     <button
-                                        onClick={() => router.push(`/admin/blog/new/${post.id}`)}
+                                        onClick={() => handleTogglePublish(post)}
+                                        className={`px-4 py-2 border rounded-lg transition-all flex items-center gap-2 ${
+                                            post.published 
+                                            ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20" 
+                                            : "border-blue-500/20 bg-blue-500/10 text-blue-500 hover:bg-blue-500/20"
+                                        }`}
+                                    >
+                                        {post.published ? <Eye size={16} /> : <EyeOff size={16} />}
+                                        {post.published ? "Published" : "Draft"}
+                                    </button>
+                                    <button
+                                        onClick={() => router.push(`/admin/blog/${post.id}/edit`)}
                                         className="px-4 py-2 border border-border rounded-lg hover:border-foreground/20 transition-colors"
                                     >
                                         Edit

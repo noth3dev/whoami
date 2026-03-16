@@ -23,7 +23,7 @@ export default function AdminPage() {
         }
         checkUser()
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, session: any) => {
             setUser(session?.user ?? null)
         })
 
@@ -130,10 +130,10 @@ export default function AdminPage() {
                                 const res = await fetch("/api/projects/create", {
                                     method: "POST",
                                     headers: { "Authorization": `Bearer ${session.access_token}` },
-                                    body: JSON.stringify({ data: { title: "Untitled Project", published: false } })
+                                    body: JSON.stringify({ data: { title: "Untitled Project" } })
                                 });
                                 const { id } = await res.json();
-                                if (id) router.push(`/admin/project/new/${id}`);
+                                if (id) router.push(`/admin/project/${id}/edit`);
                             }}
                             onManage={() => router.push("/admin/project/list")}
                         />
@@ -148,7 +148,7 @@ export default function AdminPage() {
                                     headers: { "Authorization": `Bearer ${session.access_token}` }
                                 });
                                 const { id } = await res.json();
-                                if (id) router.push(`/admin/blog/new/${id}`);
+                                if (id) router.push(`/admin/blog/${id}/edit`);
                             }}
                             onManage={() => router.push("/admin/blog/list")}
                         />

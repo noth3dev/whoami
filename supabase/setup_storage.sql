@@ -14,7 +14,7 @@ USING ( bucket_id = 'media' );
 
 -- 3. Allow authenticated users to upload files to the 'media' bucket
 -- (In your case, you'll be authenticated as the admin)
-CREATE POLICY "Admin Upload"
+CREATE POLICY "Admin Upload"ㅌ
 ON storage.objects FOR INSERT
 WITH CHECK ( bucket_id = 'media' AND auth.role() = 'authenticated' );
 

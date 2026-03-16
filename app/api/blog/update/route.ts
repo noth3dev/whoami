@@ -17,17 +17,29 @@ export async function POST(request: Request) {
             return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         }
 
+        // Filter data to only include valid columns
+        // NOTE: 'image' and 'slug' are temporarily removed until added to the DB
+        const allowedColumns = ['title', 'date', 'excerpt', 'content', 'tags', 'published', 'category'];
+        const filteredData = Object.keys(data)
+            .filter(key => allowedColumns.includes(key))
+            .reduce((obj: any, key) => {
+                obj[key] = data[key];
+                return obj;
+            }, {});
+
         const { error } = await supabaseAdmin
             .from('blog_posts')
-            .update(data)
+            .update(filteredData)
             .eq('id', id);
 
         if (error) {
+            console.error("[API/Blog/Update] Supabase Error:", error);
             return NextResponse.json({ message: error.message }, { status: 500 });
         }
 
         return NextResponse.json({ message: 'Blog post updated successfully' });
     } catch (error: any) {
+        console.error("[API/Blog/Update] Global Error:", error);
         return NextResponse.json({ message: error.message }, { status: 500 });
     }
 }

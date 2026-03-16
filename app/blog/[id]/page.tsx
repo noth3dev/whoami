@@ -3,9 +3,14 @@
 import { useState, useEffect, use } from "react"
 import Link from "next/link"
 import Navigation from "@/components/navigation"
-import ReactMarkdown from "react-markdown"
 import { BlogPost } from "@/types"
 import { getBlogPostById } from "@/lib/data-service"
+import dynamic from "next/dynamic"
+
+const BlockNoteContent = dynamic(() => import("@/components/blocknote-viewer"), { 
+    ssr: false,
+    loading: () => <p className="text-muted-foreground animate-pulse">Rendering editor content...</p>
+})
 
 export default function BlogPostDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params)
@@ -77,14 +82,8 @@ export default function BlogPostDetailPage({ params }: { params: Promise<{ id: s
                         </div>
                     )}
 
-                    <div className="prose prose-invert prose-lg max-w-none pt-12 border-t border-border prose-headings:font-light prose-p:text-foreground/80">
-                        <ReactMarkdown
-                            components={{
-                                img: ({ node, ...props }) => <img {...props} className="w-full h-auto rounded-2xl border border-border shadow-lg my-12" />
-                            }}
-                        >
-                            {post.content}
-                        </ReactMarkdown>
+                    <div className="pt-12 border-t border-border">
+                        <BlockNoteContent initialContent={post.content} />
                     </div>
                 </article>
             </main>

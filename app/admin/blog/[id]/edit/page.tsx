@@ -23,7 +23,7 @@ export default function EditBlogPage({ params }: { params: Promise<{ id: string 
                 router.push("/admin")
                 return
             }
-            const post = await getBlogPostById(id)
+            const post = await getBlogPostById(id, false)
             if (post) {
                 setInitialContent(post.content || "")
                 setInitialMeta({

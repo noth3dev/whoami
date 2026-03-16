@@ -45,11 +45,14 @@ CREATE TABLE blog_posts (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   title TEXT NOT NULL,
+  slug TEXT UNIQUE,
   date TEXT,
   excerpt TEXT,
   content TEXT, -- Markdown content
   tags TEXT[],
-  published BOOLEAN DEFAULT FALSE
+  published BOOLEAN DEFAULT FALSE,
+  image TEXT,
+  category TEXT
 );
 
 -- 6. Tech Stack Table

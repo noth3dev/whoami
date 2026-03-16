@@ -66,12 +66,15 @@ export async function getProjectById(id: string) {
     return data as Project;
 }
 
-export async function getBlogPosts(limit?: number) {
+export async function getBlogPosts(limit?: number, onlyPublished: boolean = true) {
     let query = supabase
         .from('blog_posts')
         .select('*')
-        .eq('published', true)
         .order('created_at', { ascending: false });
+
+    if (onlyPublished) {
+        query = query.eq('published', true);
+    }
 
     if (limit) {
         query = query.limit(limit);
@@ -87,13 +90,17 @@ export async function getBlogPosts(limit?: number) {
     return data as BlogPost[];
 }
 
-export async function getBlogPostById(id: string) {
-    const { data, error } = await supabase
+export async function getBlogPostById(id: string, onlyPublished: boolean = true) {
+    let query = supabase
         .from('blog_posts')
         .select('*')
-        .eq('id', id)
-        .eq('published', true)
-        .single();
+        .eq('id', id);
+
+    if (onlyPublished) {
+        query = query.eq('published', true);
+    }
+
+    const { data, error } = await query.single();
 
     if (error) {
         console.error(`Error fetching blog post with id ${id}:`, error);

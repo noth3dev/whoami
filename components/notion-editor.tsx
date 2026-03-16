@@ -195,18 +195,39 @@ export default function NotionEditor({
 
                     <button className="h-7 px-2 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04] rounded transition-colors">Share</button>
                     <button className="h-7 px-2 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04] rounded transition-colors">Updates</button>
-                    <button
-                        onClick={() => mode === "blog"
-                            ? handleMetaChange({ published: !(meta as BlogMeta).published } as any)
-                            : handleMetaChange({ featured: !(meta as ProjectMeta).featured } as any)
-                        }
-                        className="h-7 px-2 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04] rounded transition-colors"
-                    >
-                        {mode === "blog"
-                            ? ((meta as BlogMeta).published ? "Public" : "Private")
-                            : ((meta as ProjectMeta).featured ? "⭐ Featured" : "Pin")
-                        }
-                    </button>
+                    {mode === "blog" ? (
+                        <button
+                            onClick={() => handleMetaChange({ published: !(meta as BlogMeta).published } as any)}
+                            className={`h-7 px-3 text-xs font-bold rounded transition-all flex items-center gap-1.5 ${
+                                (meta as BlogMeta).published 
+                                ? "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20" 
+                                : "bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
+                            }`}
+                        >
+                            {(meta as BlogMeta).published ? (
+                                <>
+                                    <Eye size={14} />
+                                    Published
+                                </>
+                            ) : (
+                                <>
+                                    <EyeOff size={14} />
+                                    Publish
+                                </>
+                            )}
+                        </button>
+                    ) : (
+                        <button
+                            onClick={() => handleMetaChange({ featured: !(meta as ProjectMeta).featured } as any)}
+                            className={`h-7 px-2 text-xs font-semibold rounded transition-colors ${
+                                (meta as ProjectMeta).featured 
+                                ? "text-amber-500 bg-amber-500/10 hover:bg-amber-500/20" 
+                                : "text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04]"
+                            }`}
+                        >
+                            {(meta as ProjectMeta).featured ? "⭐ Featured" : "Pin"}
+                        </button>
+                    )}
                     <button className="h-7 w-8 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04] rounded transition-colors">
                         <MoreHorizontal size={18} />
                     </button>
