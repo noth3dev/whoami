@@ -7,6 +7,8 @@ export interface Project {
     image?: string
     tags?: string[]
     featured?: boolean
+    content?: string
+    icon?: string
 }
 
 export interface Job {

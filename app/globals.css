@@ -130,6 +130,10 @@
     font-family: var(--font-fira-code), 'Fira Code', Consolas, Monaco, monospace;
   }
 
+  .font-bebas {
+    font-family: var(--font-bebas-neue), sans-serif;
+  }
+
   /* Custom Scrollbar */
   ::-webkit-scrollbar {
     width: 6px;

@@ -5,8 +5,9 @@ import { useCreateBlockNote } from "@blocknote/react"
 import { BlockNoteView } from "@blocknote/mantine"
 import "@blocknote/mantine/style.css"
 import { useTheme } from "next-themes"
-import { useEffect, useRef, useState, useCallback } from "react"
+import { useEffect, useRef, useState, useCallback, useMemo } from "react"
 import { uploadMedia } from "@/lib/supabase"
+import * as LucideIcons from "lucide-react"
 import { ImageIcon, X, Tag, Calendar, Hash, Eye, EyeOff, Loader2, ArrowLeft, MoreHorizontal, Smile, MessageSquare, Star, Plus } from "lucide-react"
 
 export type NotionEditorMode = "blog" | "project"
@@ -29,6 +30,7 @@ export interface ProjectMeta {
     tags: string
     featured: boolean
     image: string
+    icon: string
 }
 
 export type NotionEditorMeta = BlogMeta | ProjectMeta
@@ -77,6 +79,7 @@ export default function NotionEditor({
         tags: "",
         featured: false,
         image: "",
+        icon: "",
     }
 
     const [meta, setMeta] = useState<NotionEditorMeta>(
@@ -332,6 +335,9 @@ export default function NotionEditor({
                             </>
                         ) : (
                             <>
+                                <PropertyItem icon={<Smile size={16} />} label="Icon">
+                                    <IconSelector value={(meta as ProjectMeta).icon} onChange={v => handleMetaChange({ icon: v } as any)} />
+                                </PropertyItem>
                                 <PropertyItem icon={<Tag size={16} />} label="Type">
                                     <input className="prop-input" placeholder="Web App, Design..." value={(meta as ProjectMeta).category} onChange={e => handleMetaChange({ category: e.target.value } as any)} />
                                 </PropertyItem>
@@ -542,6 +548,81 @@ function TagInput({ value, onChange }: { value: string, onChange: (v: string) =>
                     }
                 }}
             />
+        </div>
+    )
+}
+
+
+function IconSelector({ value, onChange }: { value: string, onChange: (v: string) => void }) {
+    const [search, setSearch] = useState("")
+    const [open, setOpen] = useState(false)
+    const containerRef = useRef<HTMLDivElement>(null)
+
+    const allIcons = useMemo(() => {
+        const query = search.toLowerCase().trim()
+        const keys = Object.keys(LucideIcons).filter(k => {
+            if (k === "default" || k === "createLucideIcon") return false;
+            if (k.length < 2) return false;
+            const item = (LucideIcons as any)[k];
+            // Check if it looks like a component (function or object with render)
+            return (typeof item === 'function' || typeof item === 'object') && 
+                   k.toLowerCase().includes(query);
+        });
+        return keys.sort().slice(0, 150);
+    }, [search])
+
+    useEffect(() => {
+        const h = (e: MouseEvent) => {
+            if (containerRef.current && !containerRef.current.contains(e.target as Node)) setOpen(false)
+        }
+        document.addEventListener("mousedown", h)
+        return () => document.removeEventListener("mousedown", h)
+    }, [])
+
+    const CurrentIcon = (LucideIcons as any)[value] || null
+
+    return (
+        <div className="relative w-fit" ref={containerRef}>
+            <button 
+                onClick={() => setOpen(!open)}
+                className="prop-input flex items-center gap-2 h-7 px-2 min-w-[120px]"
+            >
+                {CurrentIcon ? <CurrentIcon size={14} /> : <Smile size={14} className="opacity-20" />}
+                <span className={value ? "text-foreground" : "text-muted-foreground/30"}>{value || "Select icon"}</span>
+            </button>
+            
+            {open && (
+                <div className="absolute top-full left-0 z-[200] mt-1 w-64 bg-background border border-border shadow-xl rounded-lg p-2 animate-in fade-in zoom-in duration-150">
+                    <input 
+                        autoFocus
+                        placeholder="Search icons..." 
+                        className="w-full h-8 px-2 mb-2 bg-foreground/[0.03] border-none outline-none text-sm rounded focus:bg-foreground/[0.05]"
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                    />
+                    <div className="grid grid-cols-5 gap-1 max-h-48 overflow-y-auto pr-1 scrollbar-thin">
+                        {allIcons.length > 0 ? (
+                            allIcons.map((iconName: string) => {
+                                const Icon = (LucideIcons as any)[iconName]
+                                return (
+                                    <button 
+                                        key={iconName}
+                                        onClick={() => { onChange(iconName); setOpen(false); }}
+                                        className={`aspect-square flex items-center justify-center rounded hover:bg-foreground/[0.05] transition-colors ${value === iconName ? "bg-foreground/[0.1] text-foreground" : "text-muted-foreground/60"}`}
+                                        title={iconName}
+                                    >
+                                        <Icon size={18} />
+                                    </button>
+                                )
+                            })
+                        ) : (
+                            <div className="col-span-5 py-8 text-center text-xs text-muted-foreground opacity-40">
+                                No icons found
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

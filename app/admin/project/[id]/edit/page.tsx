@@ -34,6 +34,7 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
                     tags: project.tags?.join(", ") || "",
                     featured: !!project.featured,
                     image: project.image || "",
+                    icon: (project as any).icon || "",
                 })
             }
             setLoading(false)
@@ -65,6 +66,7 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
                     tags: tagsArray,
                     featured: projectMeta.featured,
                     image: projectMeta.image,
+                    icon: projectMeta.icon,
                 },
             }),
         })

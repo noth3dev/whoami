@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Fira_Code } from "next/font/google"
+import { Fira_Code, Bebas_Neue } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
@@ -8,6 +8,13 @@ const firaCode = Fira_Code({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-fira-code",
+})
+
+const bebasNeue = Bebas_Neue({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-bebas-neue",
+  display: "swap",
 })
 
 export const metadata: Metadata = {
@@ -24,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ko" className={`${firaCode.variable}`} suppressHydrationWarning>
+    <html lang="ko" className={`${firaCode.variable} ${bebasNeue.variable}`} suppressHydrationWarning>
       <head>
         <link rel="icon" type="image/png" sizes="any" href="/charprofile.png" />
         <link
